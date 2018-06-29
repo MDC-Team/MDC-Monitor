@@ -10,6 +10,14 @@ Vue.use(Vuetify)
 
 Vue.config.productionTip = false
 
+Vue.mixin({
+  methods: {
+    pageRouter: function (param) {
+      router.push(param)
+    }
+  }
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
