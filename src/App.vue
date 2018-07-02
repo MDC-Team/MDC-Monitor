@@ -16,7 +16,8 @@
           v-for="(menu,index) in menus"
           :key="index"
           ripple
-          @click="pageRouter({name: menu.path})"
+          :to="{name : menu.routerName}"
+          exact
         >
           {{menu.name}}
         </v-tab>
@@ -35,22 +36,22 @@
       return {
         menus:[{
           name: "MDC总览",
-          path: "HelloWorld"
+          routerName: "HelloWorld"
         },{
           name: "机柜容量",
-          path: "Distribution"
+          routerName: "Distribution"
         },{
           name: "配电拓扑",
-          path: ""
+          routerName: ""
         },{
           name: "空调环境",
-          path: ""
+          routerName: ""
         },{
           name: "安全防护",
-          path: ""
+          routerName: ""
         },{
           name: "资产明细",
-          path: ""
+          routerName: ""
         }],
         fixed: true,
         active: null,
