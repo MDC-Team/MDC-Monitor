@@ -1,6 +1,5 @@
 <template>
   <v-container fluid>
-    <div>{{text}}</div>
     <distribution-topology></distribution-topology>
   </v-container>
 </template>
@@ -9,7 +8,6 @@
   export default {
     data() {
       return {
-        text:'hello'
       }
     },
     components:{
