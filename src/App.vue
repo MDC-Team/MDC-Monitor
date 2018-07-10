@@ -39,10 +39,10 @@
           routerName: "HelloWorld"
         },{
           name: "机柜容量",
-          routerName: "Distribution"
+          routerName: "Containers"
         },{
           name: "配电拓扑",
-          routerName: ""
+          routerName: "Distribution"
         },{
           name: "空调环境",
           routerName: ""

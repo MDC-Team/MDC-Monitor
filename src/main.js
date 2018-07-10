@@ -4,9 +4,14 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import Vuetify from 'vuetify'
+import ECharts from 'vue-echarts/components/ECharts'
+import 'echarts'
 import 'vuetify/dist/vuetify.min.css'
+import '@/assets/css/main.css'
 
 Vue.use(Vuetify)
+Vue.component('chart', ECharts)
+
 
 Vue.config.productionTip = false
 
