@@ -17,8 +17,8 @@ Vue.config.productionTip = false
 
 Vue.mixin({
   methods: {
-    pageRouter: function (param) {
-      router.push(param)
+    pagerouter: function (name, param) {
+      router.push({name:name,query:param})
     }
   }
 })
