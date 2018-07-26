@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid style="background: dimgray">
+  <v-container fluid>
     <div id="drawing" style=" overflow-y:auto; overflow-x:auto; width:1000px; height:650px;">
       <div id="shidian_text">市电电源</div>
       <div id="beidian_text">备用电源</div>
@@ -11,9 +11,15 @@
       <div id="beidian" class="switchParent">
         <div class="switch_off"></div>
       </div>
-      <div id="ATS">A<br/>T<br/>S</div>
-      <div id="switch00" class="switchParent">
-        <div class="switch_on"></div>
+      <div id="ATS">
+        <v-card dark color="primary">
+          <v-card-text>A<br/>T<br/>S</v-card-text>
+        </v-card>
+      </div>
+      <div id="zhulu" style="cursor:pointer;" @click="changeDiv('主路电表')">
+        <v-card dark color="primary">
+          <v-card-text>主路电表</v-card-text>
+        </v-card>
       </div>
       <div id="switch01" class="switchParent">
         <div class="switch_on"></div>
@@ -33,11 +39,31 @@
       <div id="switch06" class="switchParent">
         <div class="switch_on"></div>
       </div>
-      <div id="kongtiao1" class="rectangle">空调1</div>
-      <div id="kongtiao2" class="rectangle">空调2</div>
-      <div id="beiyong1" class="rectangle">备用1</div>
-      <div id="beiyong2" class="rectangle">备用2</div>
-      <div id="UPS" class="rectangle">UPS</div>
+      <div id="kongtiao1" class="rectangle">
+        <v-card dark color="primary">
+          <v-card-text>空调1</v-card-text>
+        </v-card>
+      </div>
+      <div id="kongtiao2" class="rectangle">
+        <v-card dark color="primary">
+          <v-card-text>空调2</v-card-text>
+        </v-card>
+      </div>
+      <div id="beiyong1" class="rectangle">
+        <v-card dark color="primary">
+          <v-card-text>备用1</v-card-text>
+        </v-card>
+      </div>
+      <div id="beiyong2" class="rectangle">
+        <v-card dark color="primary">
+          <v-card-text>备用2</v-card-text>
+        </v-card>
+      </div>
+      <div id="UPS" class="rectangle" style="cursor:pointer;" @click="changeDiv('UPS')">
+        <v-card dark color="primary">
+          <v-card-text>UPS</v-card-text>
+        </v-card>
+      </div>
       <div id="switch06_00" class="switchParent">
         <div class="switch_on"></div>
       </div>
@@ -50,95 +76,27 @@
       <div id="switch06_03" class="switchParent">
         <div class="switch_on"></div>
       </div>
-      <div id="table01">
-        <table border="1" cellspacing="0" class="gridtable">
-          <tr>
-            <td>0.0V</td>
-          </tr>
-          <tr>
-            <td>0.0kW</td>
-          </tr>
-        </table>
+      <div id="PDU1" class="rectangle">
+        <v-card dark color="primary">
+          <v-card-text>PDU1</v-card-text>
+        </v-card>
       </div>
-      <div id="PDU1">
-        <table border="1" cellspacing="0" class="gridtable">
-          <tr>
-            <td>PDU1</td>
-          </tr>
-          <tr>
-            <td>0.0V</td>
-          </tr>
-          <tr>
-            <td>0.0kW</td>
-          </tr>
-        </table>
+      <div id="PDU2" class="rectangle">
+        <v-card dark color="primary">
+          <v-card-text>PDU2</v-card-text>
+        </v-card>
       </div>
-      <div id="PDU2">
-        <table border="1" cellspacing="0" class="gridtable">
-          <tr>
-            <td>PDU1</td>
-          </tr>
-          <tr>
-            <td>0.0V</td>
-          </tr>
-          <tr>
-            <td>0.0kW</td>
-          </tr>
-        </table>
-      </div>
-      <div id="jiankong">
-        <table border="1" cellspacing="0" class="gridtable">
-          <tr>
-            <td>PDU1</td>
-          </tr>
-          <tr>
-            <td>0.0V</td>
-          </tr>
-          <tr>
-            <td>0.0kW</td>
-          </tr>
-        </table>
-      </div>
-      <div id="zhulu">
-        <table border="1" cellspacing="0" class="gridtable">
-          <tr>
-            <td colspan="2">主路电表参数</td>
-          </tr>
-          <tr>
-            <td>电压</td>
-            <td>0.0V</td>
-          </tr>
-          <tr>
-            <td>电流</td>
-            <td>0.0A</td>
-          </tr>
-          <tr>
-            <td>有功功率</td>
-            <td>0.0kW</td>
-          </tr>
-          <tr>
-            <td>无功功率</td>
-            <td>0.0kWA</td>
-          </tr>
-          <tr>
-            <td>视在功率</td>
-            <td>0.0kWA</td>
-          </tr>
-          <tr>
-            <td>频率</td>
-            <td>0.0Hz</td>
-          </tr>
-          <tr>
-            <td>功率因数</td>
-            <td>0.0</td>
-          </tr>
-        </table>
+      <div id="jiankong" class="rectangle">
+        <v-card dark color="primary">
+          <v-card-text>备用2</v-card-text>
+        </v-card>
       </div>
     </div>
   </v-container>
 </template>
 <script>
   import jsPlumb from 'jsplumb'
+
 
   export default {
     data() {
@@ -147,14 +105,24 @@
         firstInstance: null,
       }
     },
+    components: {
+    },
     methods: {
+      changeDiv(divName){
+        console.log('changeDiv')
+        this.$emit('changeTableTitle', divName)
+      },
+      randomData() {
+        this.pue = Math.floor(Math.random() * Math.floor(100))
+        this.available = Math.floor(Math.random() * Math.floor(200))/100
+      },
       jsPlumbInit() {
         this._jsPlumb = jsPlumb.jsPlumb;
         this.firstInstance = this._jsPlumb.getInstance({
           ConnectionsDetachable: false,
           Connector: ["Straight"],
           Endpoint: ["Dot", {radius: 0.1}],
-          PaintStyle: {strokeWidth: 3, stroke: "#fff"}
+          PaintStyle: {strokeWidth: 3, stroke: "#0f0"}
         });
       },
       addEndpoints(toId, sourceAnchors, targetAnchors) {
@@ -177,7 +145,7 @@
         this.addEndpoints("shidian", ["TopCenter", "BottomCenter", "LeftMiddle", "RightMiddle"], ["TopCenter", "BottomCenter", "LeftMiddle", "RightMiddle"]);
         this.addEndpoints("beidian", ["TopCenter", "BottomCenter", "LeftMiddle", "RightMiddle"], ["TopCenter", "BottomCenter", "LeftMiddle", "RightMiddle"]);
         this.addEndpoints("ATS", ["TopCenter", "BottomCenter", "LeftMiddle", "RightMiddle"], ["TopCenter", "BottomCenter", "LeftMiddle", "RightMiddle"]);
-        this.addEndpoints("switch00", ["TopCenter", "BottomCenter", "LeftMiddle", "RightMiddle"], ["TopCenter", "BottomCenter", "LeftMiddle", "RightMiddle"]);
+        this.addEndpoints("zhulu", ["TopCenter", "BottomCenter", "LeftMiddle", "RightMiddle"], ["TopCenter", "BottomCenter", "LeftMiddle", "RightMiddle"]);
         this.addEndpoints("kongtiao1", ["TopCenter", "BottomCenter", "LeftMiddle", "RightMiddle"], ["TopCenter", "BottomCenter", "LeftMiddle", "RightMiddle"]);
         this.addEndpoints("kongtiao2", ["TopCenter", "BottomCenter", "LeftMiddle", "RightMiddle"], ["TopCenter", "BottomCenter", "LeftMiddle", "RightMiddle"]);
         this.addEndpoints("beiyong1", ["TopCenter", "BottomCenter", "LeftMiddle", "RightMiddle"], ["TopCenter", "BottomCenter", "LeftMiddle", "RightMiddle"]);
@@ -206,8 +174,8 @@
           connector: ["Flowchart", {stub: [0, 0]}]
         })
         this.firstInstance.connect({
-          uuids: ["ATSRightMiddle", "switch00LeftMiddle"],
-          connector: ["Flowchart", {stub: [0, 0]}]
+          uuids: ["ATSRightMiddle", "zhuluLeftMiddle"],
+          connector: ["Straight"]
         })
         this.firstInstance.connect({uuids: ["switch01RightMiddle", "kongtiao1LeftMiddle"], connector: ["Straight"]})
         this.firstInstance.connect({uuids: ["switch02RightMiddle", "kongtiao2LeftMiddle"], connector: ["Straight"]})
@@ -243,7 +211,7 @@
         for (var i = 1; i < 7; i++) {
           this.addEndpoints("switch0" + i, ["TopCenter", "BottomCenter", "LeftMiddle", "RightMiddle"], ["TopCenter", "BottomCenter", "LeftMiddle", "RightMiddle"]);
           this.firstInstance.connect({
-            uuids: ["switch00RightMiddle", "switch0" + i + "LeftMiddle"],
+            uuids: ["zhuluRightMiddle", "switch0" + i + "LeftMiddle"],
             connector: ["Flowchart", {stub: [0, 0]}]
           })
         }
@@ -265,13 +233,11 @@
     position: absolute;
     left: 20px;
     top: 100px;
-    color: white;
   }
   #beidian_text {
     position: absolute;
     left: 20px;
     top: 180px;
-    color: white;
   }
   #start_point_1 {
     position: absolute;
@@ -311,16 +277,10 @@
     text-align: center;
   }
 
-  #table01 {
+  #zhulu {
     position: absolute;
-    left: 270px;
-    top: 100px;
-  }
-
-  #switch00 {
-    position: absolute;
-    left: 280px;
-    top: 165px;
+    left: 250px;
+    top: 150px;
   }
 
   #switch01 {
@@ -416,29 +376,23 @@
   #PDU1 {
     position: absolute;
     left: 780px;
-    top: 415px;
+    top: 435px;
   }
 
   #PDU2 {
     position: absolute;
     left: 780px;
-    top: 495px;
+    top: 515px;
   }
 
   #jiankong {
     position: absolute;
     left: 780px;
-    top: 575px;
-  }
-
-  #zhulu {
-    position: absolute;
-    left: 120px;
-    top: 400px;
+    top: 595px;
   }
 
   .rectangle {
-    width: 60px;
+    width: 80px;
     height: 30px;
     background: white;
     color: black;
@@ -453,27 +407,60 @@
   }
 
   .switch_on {
-    width: 20px;
-    height: 20px;
-    background-color: deepskyblue;
+  }
+
+  .switch_on:before{
+    content:' ';
+    position: absolute;
+    z-index:2;
+    left:0;
+    top:0;
+    width:20px;
+    height:20px;
+    background-color: #0f0;
     border-radius: 50%;
-    -moz-border-radius: 50%;
-    -webkit-border-radius: 50%;
+  }
+
+  .switch_on:after {
+    content:' ';
+    position: absolute;
+    z-index:1;
+    width:20px;
+    height:20px;
+    background-color: #0f0;
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(0,0,0,.3) inset;
+    -webkit-animation-name:'ripple';/*动画属性名，也就是我们前面keyframes定义的动画名*/
+    -webkit-animation-duration: 1s;/*动画持续时间*/
+    -webkit-animation-timing-function: ease; /*动画频率，和transition-timing-function是一样的*/
+    -webkit-animation-delay: 0s;/*动画延迟时间*/
+    -webkit-animation-iteration-count: infinite;/*定义循环资料，infinite为无限次*/
+    -webkit-animation-direction: normal;/*定义动画方式*/
+  }
+
+  @keyframes ripple {
+    0% {
+      left:10px;
+      top:10px;
+      opcity:75;
+      width:0;
+      height:0;
+    }
+    100% {
+      left:-15px;
+      top:-15px;
+      opacity: 0;
+      width:50px;
+      height:50px;
+    }
   }
 
   .switch_off {
     width: 20px;
     height: 20px;
-    background-color: black;
+    background-color: #f00;
     border-radius: 50%;
     -moz-border-radius: 50%;
     -webkit-border-radius: 50%;
-  }
-
-  .gridtable {
-    background: white;
-    color: #000;
-    font-weight: bold;
-    border-width: 1px;
   }
 </style>

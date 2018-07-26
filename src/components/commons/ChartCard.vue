@@ -67,8 +67,10 @@
               startAngle: 180,
               endAngle: 0,
               center: ['50%', '20%'],    // 默认全局居中
-              detail: {formatter: '{value}%'},
-              data: [{value: this.pue, name: 'PUE'}],
+              data: [{value: 1.3, name: 'PUE'}],
+              min:0,
+              max:3,
+              splitNumber:3,
               splitLine: {
                 show: false
               },
@@ -151,8 +153,8 @@
               },
               data: [
                 {
-                  value: [2,2,2,2,2],
-                  name: '数值'
+                  value: [2,8,6,5,7],
+                  name: '剩余数值'
                 }
               ]
             }

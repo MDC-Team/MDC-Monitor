@@ -1,6 +1,5 @@
 <template>
   <v-app>
-
     <!--退出登录确认框-->
     <v-dialog v-model="makeSureExitDialog" max-width="290px">
       <v-card>
@@ -25,27 +24,34 @@
       app
       dark
       color="primary"
-      v-if="$router.app._route.name !== 'Login'"
+
     >
       <v-toolbar-side-icon @click="drawer = !drawer"></v-toolbar-side-icon>
+      <img src="./assets/img/logo.png" style="width: 100px"/>
       <v-toolbar-title v-text="title"></v-toolbar-title>
       <v-spacer/>
+      <span>当前用户：{{userName}}</span>
       <div id="newsShack">
-      <v-badge v-model="newsShow" color="red" overlap>
+      <v-badge v-model="newsShow" color="red" overlap v-if="newsCount > 0">
         <span slot="badge">{{newsCount}}</span>
-        <v-btn icon title="系统消息">
-          <v-icon large>notification_important</v-icon>
+        <v-btn icon title="系统消息" @click="pagerouter('AlertLog')">
+          <v-icon :color="badgeColor" large>notification_important</v-icon>
         </v-btn>
       </v-badge>
+        <v-btn icon title="系统消息" @click="pagerouter('AlertLog')" v-if="newsCount === 0">
+          <v-icon large>notification_important</v-icon>
+        </v-btn>
       </div>
 
       <v-btn icon @click="makeSureExitDialog = true" title="退出登录">
         <v-icon>power_settings_new</v-icon>
       </v-btn>
     </v-toolbar>
-    <v-content>
-      <router-view/>
-    </v-content>
+    <div @mousemove='checkXY'>
+      <v-content>
+        <router-view :changeAlert="changeAlert"/>
+      </v-content>
+    </div>
 
     <v-navigation-drawer
       temporary
@@ -54,34 +60,39 @@
       app
     >
       <v-list>
-        <template v-for="(menu, i) in menuItems">
-          <v-list-group v-if="menu.parent"
-                        :prepend-icon="menu.icon ? menu.icon : ''"n>
-            <v-list-tile slot="activator">
-              <v-list-tile-title>{{menu.name}}</v-list-tile-title>
-            </v-list-tile>
-            <v-list-tile
-              v-for="(childMenu, i) in menu.childMenuItems"
-              :key="i"
-              @click="pagerouter(childMenu.url)"
-            >
-              <v-list-tile-action>
-                <v-icon>{{childMenu.icon}}</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-title>{{childMenu.name}}</v-list-tile-title>
-            </v-list-tile>
-          </v-list-group>
-          <v-list-tile v-else @click="pagerouter(menu.url)">
+        <template v-for="(menu) in menuItems">
+          <v-list-tile @click="pagerouter(menu.url)" v-if="!menu.parent">
             <v-list-tile-action>
               <v-icon>{{menu.icon}}</v-icon>
             </v-list-tile-action>
             <v-list-tile-title>{{menu.name}}</v-list-tile-title>
           </v-list-tile>
+          <template v-else>
+            <v-list-group
+              no-action
+              :prepend-icon="menu.icon"
+              value="true"
+            >
+              <v-list-tile slot="activator">
+                <v-list-tile-title>{{menu.name}}</v-list-tile-title>
+              </v-list-tile>
+
+              <v-list-tile
+                v-for="(childMenu, i) in menu.childMenuItems"
+                :key="i"
+                @click="pagerouter(childMenu.url)"
+              >
+                <v-list-tile-title v-text="childMenu.name"></v-list-tile-title>
+                <v-list-tile-action>
+                  <v-icon v-text="childMenu.icon"></v-icon>
+                </v-list-tile-action>
+              </v-list-tile>
+            </v-list-group>
+          </template>
         </template>
       </v-list>
     </v-navigation-drawer>
-
-    <v-footer :fixed="fixed" app v-if="$router.app._route.name !== 'Login'">
+    <v-footer :fixed="fixed" app>
       <span>&copy; 2018</span>
     </v-footer>
   </v-app>
@@ -95,27 +106,31 @@
       return {
         fixed: true,
         active: null,
-        title: 'MDC-Monitor',
+        title: '数据中心管理系统',
         makeSureExitDialog: false,
         newsCount: 0,
         newsShow: false,
         right: true,
         drawer: false,
-        menuItems:[
-          {name:'用户管理',url:'',icon:'account_circle',parent:true,childMenuItems:[
-              {name:'账户管理',url:'User',icon:'account_box'},
-              {name:'权限管理',url:'Role',icon:'how_to_reg'},
-            ]},
-          {name:'设备监控',url:'CurrentMonitor',icon:'devices',parent:false,childMenuItems:[]},
-          {name:'机柜容量',url:'Containers',icon:'devices',parent:false,childMenuItems:[]},
-          {name:'配电拓扑',url:'Distribution',icon:'devices',parent:false,childMenuItems:[]},
-
-        ]
+        menuItems:[],
+        role:{},
+        roleList:[],
+        alertItems:[],
+        x:0,
+        y:0,
+        userName:'',
+        badgeColor:'',
       }
     },
     name: 'App',
+    created(){
+    },
     mounted() {
       this.checkNews();
+      this.checkMenus();
+      this.checkAlerts();
+      var user = JSON.parse(localStorage.getItem('user'))
+      this.userName = user.firstName+user.lastName
     },
     methods: {
       logout() {
@@ -129,6 +144,40 @@
           this.newsShow = true;
         }
       },
+      checkMenus(){
+        this.roleList = JSON.parse(localStorage.getItem('roleList'))
+        this.roleList.forEach(role=>{
+          if(role.id === parseInt(localStorage.getItem(`role`))){
+            this.role = role;
+          }
+        })
+        JSON.parse(localStorage.getItem('menuList')).forEach(menu=>{
+          this.role.roleMenus.forEach(roleMenu=>{
+            if(menu.id === roleMenu){
+              this.menuItems.push(menu)
+            }
+          })
+        })
+      },
+      checkAlerts(){
+        this.alertItems = JSON.parse(localStorage.getItem('alertLogList')) === null ? [] : JSON.parse(localStorage.getItem('alertLogList'))
+        //如果有未确认消息，图标显示黄色
+        this.alertItems.forEach(alert=>{
+          if(!alert.confirm){
+            this.badgeColor = 'yellow'
+          }
+        })
+        this.newsCount = this.alertItems.length
+      },
+      checkXY(event){
+        if(event.clientX <= 0){
+          this.drawer = true
+        }
+      },
+      changeAlert(val){
+        console.log(val)
+        console.log('changeAlert')
+      }
     },
   }
 </script>
@@ -156,5 +205,14 @@
     40%, 60% {
       transform: translate3d(4px, 0, 0);
     }
+  }
+  #canvas{
+    width: 500px;
+    height: 500px;
+    text-align: center;
+    line-height: 500px;
+    border: 1px solid #E5E5E5;
+    margin: 0 auto;
+    margin-top: 100px;
   }
 </style>

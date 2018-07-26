@@ -10,13 +10,14 @@
           <v-card-text>删除后不可恢复。</v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="success" @click.native="deleteUser()" :loading="deleteLoading">删除</v-btn>
-            <v-btn color="error" @click.native="delete_dialog = false">取消</v-btn>
+            <v-btn color="success" @click="deleteUser()" :loading="deleteLoading">删除</v-btn>
+            <v-btn color="error" @click="delete_dialog = false">取消</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
     </v-layout>
 
+    <v-container fluid>
     <v-card>
       <!--顶部工具栏-->
       <v-toolbar class="cyan" dark>
@@ -94,6 +95,7 @@
         </template>
       </v-data-table>
     </v-card>
+    </v-container>
   </div>
 </template>
 <script>
@@ -105,11 +107,11 @@
         },
         headerItems:[
           {text: '用户名', value: 'name'},
-          {text: '全名', value: 'description'},
-          {text: 'E-mail', value: 'source'},
-          {text: '联系方式', value: 'type'},
+          {text: '全名', value: 'fullname'},
+          {text: 'E-mail', value: 'email'},
+          {text: '联系方式', value: 'phone'},
           {text: '状态', value: 'enabled'},
-          {text: '角色', value: 'enabled'},
+          {text: '角色', value: 'role'},
         ],
         search: '',
         selected: [],
