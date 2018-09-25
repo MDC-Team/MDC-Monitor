@@ -4,14 +4,17 @@
   "description": "A Vue.js project",
   "author": "DAIXIAOYI\\Daixiaoyi <510250928@qq.ocm>",
   "private": true,
-  "main" : "main.js",
+  "main": "main.js",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
+    "electron": "electron .",
+    "electron_log": "electron . --enable-logging",
     "unit": "jest --config test/unit/jest.conf.js --coverage",
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
     "build": "node build/build.js",
+    "electron_dev": "npm run build && electron build/electron.js --enable-logging",
     "packager": "electron-packager . mdc-monitor --win --out ./OutApp --arch=x64 --overwrite --ignore=node_modules --electron-version 1.0.0"
   },
   "dependencies": {
@@ -19,7 +22,8 @@
     "vue": "^2.5.2",
     "vue-echarts": "^3.0.9",
     "vue-router": "^3.0.1",
-    "vuetify": "^1.0.0"
+    "vuetify": "^1.0.0",
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
@@ -41,6 +45,8 @@
     "copy-webpack-plugin": "^4.0.1",
     "cross-spawn": "^5.0.1",
     "css-loader": "^0.28.0",
+    "electron": "^2.0.5",
+    "electron-packager": "^12.1.0",
     "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^1.1.4",
     "friendly-errors-webpack-plugin": "^1.6.1",

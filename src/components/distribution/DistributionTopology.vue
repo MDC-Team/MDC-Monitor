@@ -109,7 +109,6 @@
     },
     methods: {
       changeDiv(divName){
-        console.log('changeDiv')
         this.$emit('changeTableTitle', divName)
       },
       randomData() {

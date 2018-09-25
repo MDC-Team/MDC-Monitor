@@ -4,12 +4,10 @@
       <v-flex d-flex xs12 sm12 md6>
             <case></case>
       </v-flex>
-      <v-flex d-flex xs12 sm12 md3>
-        <div id="chartDiv">
-          <chart-card :pue="pue" :available="available"></chart-card>
+      <v-flex d-flex xs12 sm12 md6>
+        <div align="center">
+        <chart-card :pue="pue" :available="available" style="width: 250px"></chart-card>
         </div>
-      </v-flex>
-      <v-flex d-flex xs12 sm12 md3>
       </v-flex>
     </v-layout>
   </v-container>
@@ -39,7 +37,7 @@
     },
     components: {
       "chart-card": ChartCard,
-      "case": Case
+      "case": Case,
     },
   }
 </script>

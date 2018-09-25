@@ -14,31 +14,35 @@
         </v-card>
       </v-dialog>
     </v-layout>
-
-    <v-container fluid fill-height>
-      <v-layout align-center justify-center>
-        <v-flex xs12 sm8 md4>
-          <v-card class="elevation-12">
-            <v-toolbar dark color="primary">
-              <v-toolbar-title>Welcome!</v-toolbar-title>
-              <v-spacer/>
-            </v-toolbar>
-            <v-card-text>
-              <v-form>
-                <v-select v-model="role" :items="roleItems" item-text="description" item-value="id" label="登录角色"
-                          prepend-icon="assignment_ind"/>
-                <v-text-field v-model="username" prepend-icon="person" name="login" label="用户名" type="text"/>
-                <v-text-field v-model="userpwd" prepend-icon="lock" name="password" label="密码" id="password"
-                              type="password" @keyup.enter="login"/>
-              </v-form>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer/>
-              <v-btn color="primary" @click="login">登录</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-flex>
-      </v-layout>
+    <v-container fluid>
+      <div class="loginContainer">
+        <v-layout align-center justify-center column fill-height>
+          <div>
+            <v-layout row>
+              <img src="./assets/img/logo.png" style="width:150px;height:80px;"/>
+              <div class="display-1" style="color: #fff;margin:auto;">数据中心管理系统</div>
+            </v-layout>
+            <v-card class="elevation-12">
+              <v-toolbar dark color="primary">
+                <v-toolbar-title>Welcome</v-toolbar-title>
+                <v-spacer/>
+              </v-toolbar>
+              <v-card-text>
+                <v-form>
+                  <v-select v-model="role" :items="roleItems" item-text="description" item-value="id" label="登录角色"
+                            prepend-icon="assignment_ind"/>
+                  <v-text-field v-model="username" prepend-icon="person" name="login" label="用户名" type="text"/>
+                  <v-text-field v-model="userpwd" prepend-icon="lock" name="password" label="密码" id="password"
+                                type="password" @keyup.enter="login"/>
+                </v-form>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn block color="primary" @click="login">登录</v-btn>
+              </v-card-actions>
+            </v-card>
+          </div>
+        </v-layout>
+      </div>
     </v-container>
   </v-app>
 </template>
@@ -58,6 +62,11 @@
     },
     mounted() {
       this.dataInit()
+      this.$axios.get("/api/user/getUser?id=1")
+        .then((response)=>{
+          console.log(response.data)
+          console.log(response.data == '')
+        })
     },
     methods: {
       dataInit() {
@@ -71,7 +80,14 @@
         localStorage.setItem(`menuList`, JSON.stringify([
           {id: '1', name: '监控主页', url: 'CurrentMonitor', icon: 'devices', parent: false, childMenuItems: []},
           {id: '2', name: '配电拓扑', url: 'Distribution', icon: 'flash_on', parent: false, childMenuItems: []},
-          {id: '3', name: '制冷监控', url: 'RefrigerationMonitor', icon: 'invert_colors', parent: false, childMenuItems: []},
+          {
+            id: '3',
+            name: '制冷监控',
+            url: 'RefrigerationMonitor',
+            icon: 'invert_colors',
+            parent: false,
+            childMenuItems: []
+          },
           {
             id: '4',
             name: '安防监控',
@@ -83,12 +99,14 @@
           {id: '5', name: '资产管理', url: 'Assets', icon: 'attach_money', parent: false, childMenuItems: []},
           {id: '6', name: '账户管理', url: 'User', icon: 'account_box', parent: false, childMenuItems: []},
           {id: '7', name: '权限管理', url: 'Role', icon: 'how_to_reg', parent: false, childMenuItems: []},
-          {id: '8', name: '日志管理', url: '', icon: 'info', parent: true, childMenuItems: [
+          {
+            id: '8', name: '日志管理', url: '', icon: 'info', parent: true, childMenuItems: [
               {id: '8_1', name: '操作日志', url: 'OperationLog', icon: 'info'},
               {id: '8_2', name: '门禁日志', url: 'EntranceLog', icon: 'info'},
               {id: '8_3', name: '报警日志', url: 'AlertLog', icon: 'info'},
               {id: '8_4', name: '报表管理', url: 'ReportForm', icon: 'info'}
-            ]},
+            ]
+          },
         ]));
         localStorage.setItem(`userList`, JSON.stringify([
           {
@@ -117,7 +135,7 @@
           }
         ]));
         localStorage.setItem(`alertLogList`, JSON.stringify([{
-          id:'1',
+          id: '1',
           deviceProperty: '出风温度',
           alertName: '低温报警',
           triggerTime: '2018-01-01 15:38:56',
@@ -154,11 +172,20 @@
 </script>
 <style>
   #login {
-    position: fixed;
+    /*position: fixed;*/
     width: 100%;
     height: 100%;
     background: url('./assets/img/login_bg.jpg') center center no-repeat;
     background-size: cover;
-    background-position: 50% 50%;
+    /*background-position: 50% 50%;*/
+  }
+
+  /*#title {*/
+  /*width: 500px;*/
+  /*position: relative;*/
+  /*top: 20px;*/
+  /*}*/
+  .loginContainer {
+    height: 100%;
   }
 </style>

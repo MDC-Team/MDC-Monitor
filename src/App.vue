@@ -32,13 +32,13 @@
       <v-spacer/>
       <span>当前用户：{{userName}}</span>
       <div id="newsShack">
-      <v-badge v-model="newsShow" color="red" overlap v-if="newsCount > 0">
-        <span slot="badge">{{newsCount}}</span>
-        <v-btn icon title="系统消息" @click="pagerouter('AlertLog')">
-          <v-icon :color="badgeColor" large>notification_important</v-icon>
-        </v-btn>
-      </v-badge>
-        <v-btn icon title="系统消息" @click="pagerouter('AlertLog')" v-if="newsCount === 0">
+        <v-badge color="red" overlap v-if="logCount > 0">
+          <span slot="badge">1</span>
+          <v-btn icon title="系统消息" @click="pagerouter('AlertLog')">
+            <v-icon :color="badgeColor" large>notification_important</v-icon>
+          </v-btn>
+        </v-badge>
+        <v-btn icon title="系统消息" @click="pagerouter('AlertLog')" v-if="logCount === 0">
           <v-icon large>notification_important</v-icon>
         </v-btn>
       </div>
@@ -49,7 +49,7 @@
     </v-toolbar>
     <div @mousemove='checkXY'>
       <v-content>
-        <router-view :changeAlert="changeAlert"/>
+        <router-view/>
       </v-content>
     </div>
 
@@ -100,6 +100,7 @@
 
 <script>
   import router from '@/router'
+  import {mapState, mapMutations} from 'vuex'
 
   export default {
     data() {
@@ -108,82 +109,78 @@
         active: null,
         title: '数据中心管理系统',
         makeSureExitDialog: false,
-        newsCount: 0,
-        newsShow: false,
         right: true,
         drawer: false,
-        menuItems:[],
-        role:{},
-        roleList:[],
-        alertItems:[],
-        x:0,
-        y:0,
-        userName:'',
-        badgeColor:'',
+        menuItems: [],
+        role: {},
+        roleList: [],
+        alertItems: [],
+        x: 0,
+        y: 0,
+        userName: '',
       }
     },
     name: 'App',
-    created(){
+    created() {
     },
     mounted() {
-      this.checkNews();
       this.checkMenus();
       this.checkAlerts();
       var user = JSON.parse(localStorage.getItem('user'))
-      this.userName = user.firstName+user.lastName
+      this.userName = user.firstName + user.lastName
+    },
+    computed: {
+      ...mapState('alertLog', ['logConfirmFlag','logCount']),
+      badgeColor: function(){
+        if(this.logConfirmFlag){
+          return ''
+        }else{
+          return 'yellow'
+        }
+      }
     },
     methods: {
+      ...mapMutations('alertLog', ['setLogCount','setLogConfirmFlag']),
       logout() {
         this.makeSureExitDialog = false;
         router.push('/');
       },
-      checkNews() {
-        //假装发现有一条未读消息
-        this.newsCount = 1;
-        if (this.newsCount !== 0) {
-          this.newsShow = true;
-        }
-      },
-      checkMenus(){
+      checkMenus() {
         this.roleList = JSON.parse(localStorage.getItem('roleList'))
-        this.roleList.forEach(role=>{
-          if(role.id === parseInt(localStorage.getItem(`role`))){
+        this.roleList.forEach(role => {
+          if (role.id === parseInt(localStorage.getItem(`role`))) {
             this.role = role;
           }
         })
-        JSON.parse(localStorage.getItem('menuList')).forEach(menu=>{
-          this.role.roleMenus.forEach(roleMenu=>{
-            if(menu.id === roleMenu){
+        JSON.parse(localStorage.getItem('menuList')).forEach(menu => {
+          this.role.roleMenus.forEach(roleMenu => {
+            if (menu.id === roleMenu) {
               this.menuItems.push(menu)
             }
           })
         })
       },
-      checkAlerts(){
+      checkAlerts() {
         this.alertItems = JSON.parse(localStorage.getItem('alertLogList')) === null ? [] : JSON.parse(localStorage.getItem('alertLogList'))
         //如果有未确认消息，图标显示黄色
-        this.alertItems.forEach(alert=>{
-          if(!alert.confirm){
-            this.badgeColor = 'yellow'
+        this.alertItems.forEach(alert => {
+          if (!alert.confirm) {
+            this.setLogConfirmFlag(false)
           }
         })
-        this.newsCount = this.alertItems.length
+        this.setLogCount(this.alertItems.length)
       },
-      checkXY(event){
-        if(event.clientX <= 0){
+      checkXY(event) {
+        if (event.clientX <= 0) {
           this.drawer = true
         }
       },
-      changeAlert(val){
-        console.log(val)
-        console.log('changeAlert')
-      }
     },
   }
 </script>
 <style>
   #newsShack:hover {
-    animation: shake 1s cubic-bezier(.36,.07,.19,.97) both;
+    animation: shake 1s cubic-bezier(.36, .07, .19, .97) both;
     transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
     perspective: 1000px;
@@ -206,7 +203,8 @@
       transform: translate3d(4px, 0, 0);
     }
   }
-  #canvas{
+
+  #canvas {
     width: 500px;
     height: 500px;
     text-align: center;

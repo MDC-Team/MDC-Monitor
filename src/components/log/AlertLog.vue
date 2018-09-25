@@ -98,6 +98,7 @@
   </div>
 </template>
 <script>
+  import {mapState, mapMutations} from 'vuex'
   export default {
     data() {
       return {
@@ -126,7 +127,11 @@
     mounted() {
       this.getAlertList();
     },
+    computed: {
+      ...mapState('alertLog', ['logCount','logConfirmFlag']),
+    },
     methods: {
+      ...mapMutations('alertLog', ['setLogCount','setLogConfirmFlag']),
       toggleAll() {
         if (this.selected.length) this.selected = []
         else this.selected = this.items.slice()
@@ -141,12 +146,18 @@
       },
       getAlertList(){
         this.items = JSON.parse(localStorage.getItem('alertLogList')) === null ? [] : JSON.parse(localStorage.getItem('alertLogList'))
+        this.setLogConfirmFlag(true)
+        //如果有未确认消息，图标显示黄色
+        this.items.forEach(alert => {
+          if (!alert.confirm) {
+            this.setLogConfirmFlag(false)
+          }
+        })
       },
       delete() {
         this.delete_dialog = false
       },
       confirmAlert(id) {
-        this.$emit('changeAlert', 123)
         this.items.forEach((alert) => {
           if (alert.id == id) {
             alert.confirm = true
@@ -157,7 +168,6 @@
       }
     },
     components: {},
-    computed: {},
     watch: {
       selected: {
         handler: function (newVal) {//多选框内容改变监听

@@ -63,7 +63,6 @@
 
       optionInit(name) {
         var randomValue = 0 + Math.round(Math.random() * (100 - 0));
-        console.log(randomValue)
         return {
           title : {
             text: name+'容量',
